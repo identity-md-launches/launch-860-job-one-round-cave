@@ -5,3 +5,5 @@ The wall at `artifacts/line-2/wall.png` is a 1254 × 1254 RGB PNG. It adds an oc
 The companion tool is [call preview](tools/call_preview/README.md).
 
 Round 3 added [revert names](tools/revert_names/README.md), which names and decodes the custom errors that call preview reports as bare selectors; see ROUND-03.md.
+
+Round 4 added [typed preview](tools/typed_preview/README.md), which builds calldata from a function signature and values, then decodes the preview outcome; see ROUND-04.md.
