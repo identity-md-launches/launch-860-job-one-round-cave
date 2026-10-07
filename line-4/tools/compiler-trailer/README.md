@@ -8,12 +8,14 @@ has the contract, it checks three things against what the chain returned: the
 declared compiler version, Sourcify's copy of the on-chain bytecode, and the trailer
 in Sourcify's recompiled bytecode.
 
-Python 3 standard library only. Read-only: `eth_getBlockByNumber` then `eth_getCode`
+Python 3 standard library only. Read-only: `eth_chainId`, `eth_getBlockByNumber`, then `eth_getCode`
 pinned by block hash (EIP-1898, `requireCanonical`), PublicNode first and dRPC as
 fallback, then one Sourcify GET. Uses an explicit empty proxy mapping, refuses redirects,
 sets its own User-Agent, a 30 s timeout and an 8 MiB response cap, and requires
 `jsonrpc == "2.0"` and an integer `id` that matches the request (`1.0` and `true` are
-rejected). Reads no credentials, environment variables or files; signs and sends nothing.
+rejected). It checks `eth_chainId == 0x1` before accepting a block or code from an RPC;
+a wrong-chain endpoint is skipped in favor of the next one. Reads no credentials,
+environment variables or files; signs and sends nothing.
 
 Run it on ZTO, the default, from the repository root:
 
@@ -45,7 +47,7 @@ Live, every read pinned to a block hash:
 | ZTO `0xd782…a68e` | 26136786 | solc 0.8.26, no metadata hash (`bytecodeHash: none`) | not verified at provider |
 | IMD `0xd34a…63b7` | 26136787 | solc 0.8.26, IPFS `QmbeUgrzSGcxFDjsbhXyXzpvxuwqguRFsuPftmxTbkV3P6` | `exact_match`, all three checks agree → `consistent` |
 | Uniswap v4 PoolManager | 26136787 | solc 0.8.26, no metadata hash | `match`, all three agree → `consistent` |
-| USDT `0xdAC1…1ec7` | 26136789 | bzzr0 only (pre-0.5.9 solc writes no version) | `match`, code agrees, recompiled trailer differs → `code_agrees_metadata_differs` |
+| USDT `0xdAC1…1ec7` | 26136789 | bzzr0 only (pre-0.5.9 solc writes no version) | `match`, provider's on-chain copy agrees, recompiled trailer differs → `provider_reported_code_match_metadata_differs` |
 | `0x…0001` precompile | 26136787 | no code → `no_code` | skipped |
 
 For ZTO this is new review context. Source Check (the sibling tool) finds no source at
@@ -54,9 +56,33 @@ Sourcify, but the chain itself says ZTO was built with solc 0.8.26 and
 setting. With no metadata hash, no IPFS lookup can recover the source.
 
 The USDT row fixed a mislabel in my first draft, which marked any trailer difference
-`inconsistent`. A Sourcify partial `match` *means* the code agrees and the metadata hash
-does not, so that case now has its own status. A differing trailer on an `exact_match`,
-a differing compiler version, or differing on-chain bytecode is still `inconsistent`.
+`inconsistent`. A Sourcify partial `match` reports a code match with differing metadata;
+the status now names that as provider-reported when Sourcify's on-chain bytecode copy
+also agrees with the RPC result. A differing trailer on an `exact_match`, a differing
+compiler version, or differing on-chain bytecode is still `inconsistent`.
+
+## Round 4: chain identity and bounded partial-match claims
+
+The gathering report found that the earlier version labeled every RPC result as chain 1
+without asking the endpoint. The tool now calls `eth_chainId` first and rejects anything
+other than mainnet before it reads the block or code. A partial Sourcify match with a
+different trailer and no on-chain bytecode copy now returns `incomplete`, because the
+tool cannot compare even the provider's copy with the RPC result. When that copy does
+agree, the status is `provider_reported_code_match_metadata_differs`; it still does not
+claim an independent compilation of the source.
+
+Run the live working command from the repository root:
+
+```sh
+python3 -B line-4/tools/compiler-trailer/trailer.py
+```
+
+Tried on 2026-10-07: all three offline PASS groups completed, including wrong-chain
+rejection and the sparse partial-match case. Live ZTO and IMD reads both passed the
+mainnet check at block 26136868 and then used the same block hash for `eth_getCode`.
+ZTO still reports solc 0.8.26 with no metadata hash and no source at Sourcify. IMD's
+compiler version, provider on-chain copy and recompiled trailer all agreed. No chain
+read or Sourcify response proves the published source is safe.
 
 ## Limits
 

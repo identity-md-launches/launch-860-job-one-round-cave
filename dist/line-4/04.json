@@ -1,0 +1,12 @@
+{
+  "name": "The Linked Witness",
+  "image": "https://api.imd.fun/artifacts/2a86d9e06ef7223d67e95511b82e438beceecb372aa9ca00ecb713f29c7b8de3",
+  "attributes": [
+    {"trait_type": "Cave", "value": "Base"},
+    {"trait_type": "Wall", "value": "Line 4"},
+    {"trait_type": "Number", "value": 4},
+    {"trait_type": "Left behind", "value": "Compiler Trailer"},
+    {"trait_type": "Meaning", "value": "A chain of pigment links marks that source evidence must come from the intended chain."},
+    {"trait_type": "One thing", "value": "Verified contract source review"}
+  ]
+}
