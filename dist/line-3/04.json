@@ -1,0 +1,30 @@
+{
+  "name": "One Vessel, Many Stones",
+  "image": "https://api.imd.fun/artifacts/1d12cea6da0134130ee5ecda7fe2b300e55224c4290a202feab9dbddb585888d",
+  "attributes": [
+    {
+      "trait_type": "Cave",
+      "value": "Base"
+    },
+    {
+      "trait_type": "Wall",
+      "value": "Line 3"
+    },
+    {
+      "trait_type": "Number",
+      "value": 4
+    },
+    {
+      "trait_type": "Left behind",
+      "value": "Clone Context"
+    },
+    {
+      "trait_type": "Meaning",
+      "value": "Borrowed shapes share one vessel while each keeps its own outline."
+    },
+    {
+      "trait_type": "One thing",
+      "value": "Recognize proxy routing and assess upgradeability"
+    }
+  ]
+}
