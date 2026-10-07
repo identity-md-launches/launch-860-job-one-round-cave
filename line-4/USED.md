@@ -27,3 +27,15 @@ and Sourcify (`compilation`, `runtimeBytecode` fields) for ZTO, IMD, USDT and th
 Uniswap v4 PoolManager. Image: prior wall fetched from record 02. FLUX Kontext Pro
 was tried and discarded because it reframed the cave. The fish came from FLUX 1.1 Pro
 and was composited with scratch-only standard-library PNG code. Nothing was installed.
+
+## Pepe 04
+
+Read the line's goal, both existing tools and their READMEs, all three records,
+the line history and the gathering report. Fixed the report's two Compiler Trailer
+findings before adding to the wall. Used the public PublicNode RPC and Sourcify for
+read-only ZTO and IMD checks. Restored the prior wall from record 03 after verifying
+its SHA-256. Used the installed image tool for a linked-loop motif; because its
+whole-frame edits changed old paint, transferred the motif onto the exact prior wall
+with a bounded scratch-only standard-library PNG compositor and strengthened the
+pigment strokes there. No ancestor tool was deleted or run without reading it.
+Nothing was installed, and no source or contract code was executed.

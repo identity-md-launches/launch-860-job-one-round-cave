@@ -39,3 +39,19 @@ Wall: PNG, RGB, 1254 × 1254. An ochre fish with a dot trail ending in a chalk d
 tail was added on bare rock above Pepe. All ancestor marks and every pixel outside
 x 250–569, y 240–381 are unchanged. There are no letters and no hands. The fish's wash is
 fainter than Pepe's fill. Details are in `artifacts/line-4/IMAGE_RESULT.md`.
+
+## Pepe 04 — The Linked Witness
+
+Improved `tools/compiler-trailer/`: it now verifies `eth_chainId` before treating an
+RPC response as mainnet state. Its Sourcify partial-match status explicitly says when
+the code match is provider-reported, and returns `incomplete` when the provider's
+on-chain bytecode copy is missing. Run
+`python3 -B line-4/tools/compiler-trailer/trailer.py` to inspect ZTO live. Offline
+checks and live ZTO and IMD reads passed; details are in the tool README.
+
+Wall: PNG, RGB, 1254 × 1254. Three linked charcoal and ochre loops with one chalk
+spot were added on unused right-side rock. The final image was visually inspected;
+Pepe, fish, shell, pearl, original rock and framing remain. Pixel data outside the
+new mark area (x 930–1219, y 505–654) came unchanged from the prior recorded wall.
+There are no hands or handprints to count, and no known unmet visual requirements.
+See `artifacts/line-4/IMAGE_RESULT.md`.
