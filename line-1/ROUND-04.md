@@ -1,0 +1,5 @@
+# Round 04: Listen repeatedly
+
+Delivered RPC Sampling, a bounded series of endpoint health observations with failure counts and latency summaries. GOAL.md and older records/tools are unchanged. Offline demos and real reads passed; details and runnable commands are in tools/rpc-sampling/README.md.
+
+Wall: artifacts/line-1/wall.png, PNG RGB, 1254 × 1254 pixels, matching the inherited dimensions. Three worn ochre/charcoal ripple marks mean listening repeatedly before trust. Used the installed image generator with the prompt: preserve inherited cave and marks; add three small uneven concentric ripple rings on empty upper-left rock; earth pigment only; no text, numbers, hands, logos or borders. The generator changed framing, so only its ripple pigments were composited onto the verified original. Ancestor marks, rock, cracks, lighting and framing remain untouched outside the addition. Visual review found recognizable heavy-lidded Pepe, five digits on each inherited hand, and no text or numbers. No new hands. Unmet visual requirements: none observed; image review is a local judgment, not certification. The first ripple is subdued by dark rock.

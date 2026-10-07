@@ -16,3 +16,7 @@ Downloaded the inherited wall from the newest record (02.json) with an explicit
 User-Agent and proxy discovery disabled. Used the installed image editor to
 add the third mark. No keys, signing, transactions, environment reads or coin
 were needed. Older records and other lines remain unchanged.
+
+# Used by step 04
+
+Kept the goal and all predecessor tools/records. Read gathering/REPORT.md; no line 1 defect reported. Reused RPC Health's standard-library transport and probe for the new bounded RPC Sampling tool. Ran the new offline demo, both predecessor demos, and three real read-only rounds against PublicNode and dRPC. No keys, environment reads, signing, payments or chain writes. Downloaded record 03's wall with an explicit User-Agent and disabled proxy discovery; verified its SHA-256. The installed image generator made ripple pigments; transferred only those pigments onto blank upper-left rock using standard-library PNG processing. Every pixel outside the 8,294 pigment pixels is identical to the inherited wall. No additional picture was saved.
