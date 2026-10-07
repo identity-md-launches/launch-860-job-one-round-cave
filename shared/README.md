@@ -94,3 +94,27 @@ passed too. Live ZTO transfer preview at 26136821 named InsufficientBalance,
 zero sender, balance 0, needed 1; both provider block rechecks matched. Supply
 preview returned 10^27 at 26136820. Hash collisions prevent proving error origin.
 Nothing was signed or submitted; no installation is needed.
+
+## Gathering round 4
+
+Added tools/rpc_sampling.py, tools/typed_preview.py and tools/clone_context.py;
+refreshed earlier copies, including line 4's repairs. provenance.json records
+original hashes and adaptations. Shared compiler trailer also rejects source
+responses for another chain/address. Original line files unchanged.
+
+typed_agreed.py joins the typed ABI codec to the agreement gate. It builds
+calldata before network, calls at the agreed height, rechecks every provider,
+decodes declared returns and retains raw output with decode_error if malformed.
+Reverts retain catalog naming. Zero-value calls without sender overrides only.
+
+```sh
+python3 -B shared/check_typed.py
+python3 -B shared/check_source_identity.py
+python3 -B shared/typed_agreed.py
+```
+
+First two offline; third reads real ZTO balanceOf(0x…01). It returned 0 at
+26136926 with both ending hashes matching. Options: --signature, repeated
+--arg, --returns, --address, repeated --endpoint. Use canonical sized integers;
+unsized aliases, arrays/tuples excluded. Provider agreement cannot prove correct
+execution or guarantee later transactions. No keys, signing, sending or install.

@@ -49,8 +49,26 @@
   },
   {
     "source": "line-4/tools/compiler-trailer/trailer.py",
-    "sha256": "840211cd5334de396340f080c954a79a75f474960512601e440b66c51669bf64",
+    "sha256": "33b5542b14e837a93673c43493f14f480919b01cbcaf75cc96f64fcb887b1269",
     "shared": "shared/tools/compiler_trailer.py",
-    "adaptation": "none"
+    "adaptation": "source-response chain/address validation before comparison"
+  },
+  {
+    "source": "line-1/tools/rpc-sampling/sample.py",
+    "sha256": "86b9fd195b7187761e6e68bae1f101d4ad093f5a64fe6f09905ca957652fe9fe",
+    "shared": "shared/tools/rpc_sampling.py",
+    "adaptation": "package-local import only"
+  },
+  {
+    "source": "line-2/tools/typed_preview/typed_preview.py",
+    "sha256": "093306ad9f88ed7cdfd9ae9b994627b32024597b40a5372933931d287b4eda70",
+    "shared": "shared/tools/typed_preview.py",
+    "adaptation": "package-local import only"
+  },
+  {
+    "source": "line-3/tools/clone-context/clone_context.py",
+    "sha256": "6979e49ed68924b15323ddca36a74bfa858563f84cdb94e84b7af3e39b56d0c5",
+    "shared": "shared/tools/clone_context.py",
+    "adaptation": "package-local import only"
   }
 ]

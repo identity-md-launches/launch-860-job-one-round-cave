@@ -1,45 +1,40 @@
-# The Patient Carrier — gathering 03
+# The Shared Basket — gathering 04
 
-Wall: artifacts/gathering/wall.png, PNG, 1254 × 1254, matching predecessor 02.
-Record: dist/gathering/03.json. The ancestor was downloaded from its recorded
-artifact URL and SHA-256 verified before editing. Only the final wall image is
-saved in the workspace; named outputs remain untracked.
+Wall: artifacts/gathering/wall.png, PNG, 1254 × 1254, matching predecessor 03.
+Record: dist/gathering/04.json. Predecessor downloaded from its recorded URL,
+verified SHA-256 a83eacb84a18c5b06a3d0f3df5aff014e17287fe2ba0b87a4adcf7db63f1cc2f.
+Only the gathering wall was saved as an image. New outputs remain untracked.
 
-Built-in imagegen edit added an ochre/charcoal tortoise carrying a chalk-white
-pebble on vacant rock to Pepe's upper right. Visual inspection found the main
-Pepe's wide mouth/heavy-lidded eyes, ancestral birds, trails and hearth retained,
-along with the warm rock, cracks, light and square framing. No text, numbers,
-logos, signatures, borders, real people or prohibited symbols were observed.
-No new hands or handprints; ancestral hands remain concealed, so there are no
-visible digits to count. Tortoise feet are animal feet, not hands.
+Built-in imagegen edit added an ochre/charcoal woven basket with four chalk
+pebbles on vacant lower-left rock: workers pooling useful tools. Explicit
+visual review retained Pepe's heavy-lidded eyes/wide mouth, birds, tortoise,
+trails/hearth in place, and warm rock, cracks, light and square framing.
+No text, numbers, logos, borders or prohibited subjects observed. No new hands
+or handprints. Ancestral hands concealed; no visible hand digits to count.
 
-Unmet visual requirement: exact preservation of every rock/pigment pixel cannot
-be certified. The generative edit has slight texture/pigment variation; it retains
-visible ancestral marks in place. Structural checks do not establish visual
-quality or perfect ancestry preservation. Visual review was performed explicitly.
+Unmet visual requirement: exact ancestral rock/pigment pixel preservation
+cannot be certified; generative editing produces slight surface variations.
+Visible ancestral paintings remain in place. Inherited rock has a realistic
+appearance; new marks remain worn, flat earth pigment. Structural verification
+does not certify style or ancestry preservation.
 
-Final prompt (built-in imagegen, edit mode): preserve the ancestral 1254-square
-wall's dimensions, rock, cracks, colors, light, framing and every existing mark,
-including Pepe, birds sharing a white stone, dotted trails and fire. Add only a
-small primitive ochre/charcoal tortoise on vacant rock at Pepe's upper right,
-carrying a white pebble. Worn irregular earth pigment, bare rock showing through,
-Lascaux torchlight; Pepe remains main figure. No hands, text, numbers, logos,
-watermarks, frames, people or prohibited symbols. Return the whole PNG wall.
+Final prompt (built-in imagegen, edit): preserve the entire 1254-square wall,
+rock/cracks/light/framing and every ancestral painting without erasing, moving
+or redrawing; add only a small primitive woven ochre/charcoal basket containing
+four chalk-white pebbles on vacant lower-left rock, avoiding old trails/hearth.
+Worn Lascaux/Chauvet thumb and burnt-stick marks, bare stone showing through.
+No added hands, text, numbers, logos, watermarks, frames, people or prohibited
+symbols. Return full PNG wall.
 
-Shared deliverable: agreement-gated ZTO preview now names custom reverts while
-retaining raw data. All copied modules have source hashes in shared/provenance.json.
-Offline composition checks and live supply/revert previews passed. Every line's
-checks, remaining defects and scope assessment are in REPORT.md. COINS.md says
-none: public reads and local analysis require no new coin or deployment.
-
-Run from the workspace root:
+Shared piece: typed preview gated by provider agreement. Offline checks passed;
+live ZTO balance returned 0 at agreed height 26136926. One offline command,
+from the workspace root, standard Python only:
 
 ```sh
-python3 -B shared/check_named.py
+python3 -B shared/check_typed.py
 ```
 
-This checks complete ZTO error arguments, truncation, unknown selectors and
-provider generators without network. Existing shared checks also pass. Gallery
-is self-contained HTML/CSS, with all recorded artifact URLs grouped by wall,
-newest first; its images require access to those public URLs. Rebuild it with
-`python3 -B gathering/build_gallery.py`. No transaction was sent or signed.
+REPORT.md covers all lines and gaps. check-results.json records exact commands
+and observations. COINS.md explains none needed. Gallery rebuild:
+python3 -B gathering/build_gallery.py. HTML/CSS self-contained; recorded images
+load from public artifact URLs and require network. Nothing signed or sent.

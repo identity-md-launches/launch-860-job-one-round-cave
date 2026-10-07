@@ -158,8 +158,10 @@ def compare(code, found, source):
     if hard or (checks.get('recompiledTrailer') in ('differ', 'absent_on_chain') and source['match'] == 'exact_match'):
         status = 'inconsistent'
     elif checks.get('recompiledTrailer') in ('differ', 'absent_on_chain'):
-        # A Sourcify partial "match" means exactly this: code agrees, metadata does not.
-        status = 'code_agrees_metadata_differs'
+        # The partial match is provider-reported. Without its copy of on-chain
+        # bytecode, there is not even a local comparison against the RPC result.
+        status = ('provider_reported_code_match_metadata_differs'
+                  if checks.get('providerOnchainBytecode') == 'agree' else 'incomplete')
     elif checks and set(checks.values()) <= {'agree', 'absent_both'}:
         status = 'consistent'
     else:
@@ -209,12 +211,15 @@ def rpc(url, method, params, ident):
 
 
 def pinned_code(address, url):
-    block = rpc(url, 'eth_getBlockByNumber', ['latest', False], 1)
+    chain = rpc(url, 'eth_chainId', [], 1)
+    if chain != '0x1':
+        raise ValueError('RPC is not Ethereum mainnet (eth_chainId=%r)' % chain)
+    block = rpc(url, 'eth_getBlockByNumber', ['latest', False], 2)
     if not isinstance(block, dict) or not isinstance(block.get('number'), str) or \
             not re.fullmatch(r'0x[0-9a-f]+', block['number']) or \
             not isinstance(block.get('hash'), str) or not HASH32.fullmatch(block['hash']):
         raise ValueError('Malformed block')
-    code = rpc(url, 'eth_getCode', [address, {'blockHash': block['hash'], 'requireCanonical': True}], 2)
+    code = rpc(url, 'eth_getCode', [address, {'blockHash': block['hash'], 'requireCanonical': True}], 3)
     if not isinstance(code, str) or not re.fullmatch(r'0x(?:[0-9a-fA-F]{2})*', code):
         raise ValueError('Malformed code')
     return {'number': int(block['number'], 16), 'hash': block['hash']}, bytes.fromhex(code[2:])
@@ -244,7 +249,11 @@ def inspect(address, rpcs=RPCS, sourcify=True):
         request = urllib.request.Request(SOURCIFY + address + FIELDS,
                                          headers={'User-Agent': AGENT, 'Accept': 'application/json'})
         try:
-            out['sourcify'] = compare(code, found, read(request, allow404=True))
+            source = read(request, allow404=True)
+            if (not isinstance(source, dict) or str(source.get('chainId')) != '1'
+                    or str(source.get('address', '')).lower() != address.lower()):
+                raise ValueError('Source response chain or address differs from request')
+            out['sourcify'] = compare(code, found, source)
         except (ValueError, urllib.error.URLError, TimeoutError) as error:
             out['sourcify'] = {'status': 'lookup_failed', 'error': str(error)[:200]}
     return out
@@ -293,10 +302,13 @@ def self_test():
     partial = json.loads(json.dumps(source))
     partial['match'] = 'match'
     partial['runtimeBytecode']['cborAuxdata']['1']['value'] = '0xa1'
-    assert compare(imd, full, partial)['status'] == 'code_agrees_metadata_differs'
+    assert compare(imd, full, partial)['status'] == 'provider_reported_code_match_metadata_differs'
+    sparse = json.loads(json.dumps(partial))
+    del sparse['runtimeBytecode']['onchainBytecode']
+    assert compare(imd, full, sparse)['status'] == 'incomplete'
     partial['match'] = 'exact_match'
     assert compare(imd, full, partial)['status'] == 'inconsistent'
-    print('PASS: Sourcify cross-check agree, version/bytecode disagreement, partial metadata, unverified')
+    print('PASS: Sourcify cross-check agree, version/bytecode disagreement, partial metadata, sparse partial, unverified')
 
     for reply in ({'jsonrpc': '2.0', 'id': 1.0, 'result': '0x'}, {'jsonrpc': '2.0', 'id': True, 'result': '0x'},
                   {'jsonrpc': '2.0', 'id': 2, 'result': '0x'}, {'jsonrpc': '2.0', 'id': 1, 'error': {}}, []):
@@ -306,8 +318,9 @@ def self_test():
             continue
         raise AssertionError('Bad RPC reply accepted')
     head = {'number': '0x18f0000', 'hash': '0x' + 'ab' * 32}
-    replies = iter([{'jsonrpc': '2.0', 'id': 1, 'result': head},
-                    {'jsonrpc': '2.0', 'id': 2, 'result': '0x' + zto.hex()},
+    replies = iter([{'jsonrpc': '2.0', 'id': 1, 'result': '0x1'},
+                    {'jsonrpc': '2.0', 'id': 2, 'result': head},
+                    {'jsonrpc': '2.0', 'id': 3, 'result': '0x' + zto.hex()},
                     {'chainId': '1', 'address': ZTO, 'match': None}])
     calls = []
 
@@ -319,7 +332,8 @@ def self_test():
             patch.object(urllib.request.OpenerDirector, 'open', fake_open):
         out = inspect(ZTO)
         assert out['block']['number'] == 0x18f0000 and out['trailer']['version'] == '0.8.26'
-        assert json.loads(calls[1].data)['params'][1]['blockHash'] == head['hash']
+        assert json.loads(calls[0].data)['method'] == 'eth_chainId'
+        assert json.loads(calls[2].data)['params'][1]['blockHash'] == head['hash']
         assert out['sourcify']['status'] == 'not_verified_at_provider'
         try:
             inspect('../etc/passwd')
@@ -327,7 +341,15 @@ def self_test():
             pass
         else:
             raise AssertionError('Bad address accepted')
-    print('PASS: strict JSON-RPC ids, block-hash pinned read, no proxy discovery, address validation')
+    with patch.object(urllib.request.OpenerDirector, 'open',
+                      return_value=BytesIO(b'{"jsonrpc":"2.0","id":1,"result":"0x89"}')):
+        try:
+            pinned_code(ZTO, RPCS[0])
+        except ValueError as error:
+            assert 'not Ethereum mainnet' in str(error)
+        else:
+            raise AssertionError('Wrong-chain RPC accepted')
+    print('PASS: strict JSON-RPC ids, mainnet guard, block-hash pinned read, no proxy discovery, address validation')
 
 
 def main():

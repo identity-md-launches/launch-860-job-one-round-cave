@@ -1,41 +1,29 @@
-# Gathering round 3
+# Gathering 04
 
-Read tools before running. All nine documented offline checks passed with Python
-`-B`; all tools also ran live using PublicNode/dRPC and Sourcify, 2026-10-07.
-No line files changed.
+Read all tools before execution; Python -B, standard library only. Eleven
+documented offline checks and twelve live runs passed on 2026-10-07. Exact
+commands, statuses and outputs: check-results.json. PublicNode/dRPC/Sourcify
+only; no signing or transaction sending. Line files unchanged.
 
-| Line | Tried; works | Broken / unfinished |
+| Line | Tried / works | Broken / remaining gaps |
 | --- | --- | --- |
-| 1 | Health and agreement `--demo`, then both live. Both providers fresh and agreeing at 26136816, hash `0xfe25ac44be97174f143b5b9998b62258fd0b58a6192cb20fecfed7ba4c2f15d3`. Single-provider and generator boundary defects repaired. | No observed regression. Sampling cannot establish future uptime or provider independence. |
-| 2 | Preview checks (5 groups), revert-name self-test (19 checks), both live demos. ZTO revert named `InsufficientBalance(address,uint256,uint256)`, sender 0x…0001, balance 0, needed 1. Selector found in its 1287-byte code at 26136816. | No observed regression. Collisions, unsupported arrays/tuples and unknown signatures limit naming; constants do not prove error origin. |
-| 3 | Proxy-route, proxy-authority and delegate-scan self-tests and live ZTO scans. At 26136816 hashes stable, slots zero, no clone, no delegation opcodes. Float-ID and block-shape defects repaired. | No observed functional regression. Opcode presence means potential execution, not proven reachability. Metadata detection uses a map-header heuristic, not full CBOR validation. Called contracts and custom authority remain outside the proof. |
-| 4 | Source-check and compiler-trailer self-tests, then both live. ZTO source unverified; hash-pinned code at 26136816, trailer solc 0.8.26 without metadata hash. | Trailer never queries eth_chainId yet labels results chain 1: add a mainnet check. Sparse partial-match fixture with differing auxdata reports code_agrees_metadata_differs without any bytecode comparison: label incomplete or explicitly provider-reported. No independent compilation; source still absent at Sourcify. |
+| 1 | Health/agreement/sampling demos; all three live. Providers agreed at 26136920, hash 0x7beab3a449efbcf14bc84252efdf6a3086226da83ff23a5a0675b7292f9e6e10. Three samples each fresh; failure-inclusive latency accounting passed offline. | No reproduced regression. Zero-interval samples partly reused a block; uptime and provider independence not established. |
+| 2 | Preview checks, 19 revert-name checks; call/revert-name/typed demos live. Transfer named InsufficientBalance(sender 0x…01, balance 0, needed 1); typed balanceOf returned 0. Additional original-codec boundary/roundtrip checks passed. | Typed README claims unsized int/uint support but parse_types rejects both. Use canonical int256/uint256 and correct README. Arrays/tuples and later transaction guarantees outside scope. |
+| 3 | Route/authority/delegate/clone-context self-tests and all four live. At 26136921: 1287-byte ZTO code, zero recognized slots, no exact clone or watched opcodes, matching ending hashes. Offline clone chains retain original storage context and reject reorgs. | No reproduced regression. Live traversal exercised no positive clone; exact 45-byte clones only, terminal custom routers unresolved. Metadata detection heuristic; observable authority not a complete authorization proof. |
+| 4 | Source/trailer self-tests and both live. ZTO unverified; hash-pinned 1287-byte runtime, solc 0.8.26, no metadata hash. Previous mainnet and sparse-partial defects fixed. | New local reproduction: mock mainnet pinned code then supply source chainId 137/address 0x11…11 with matching compilerVersion. inspect reports sourcify consistent instead of identity failure. Smallest fix: check source chainId/address against request before compare. Shared copy repaired; line untouched. No independent compilation or verified ZTO source. |
 
-Commands tried: `line-1/tools/rpc-health/probe.py --demo`,
-`line-1/tools/rpc-agreement/compare.py --demo`,
-`line-2/tools/preview_checks/check.py`,
-`line-2/tools/revert_names/revert_names.py --self-test`,
-`line-3/tools/proxy-route/proxy_route.py --self-test`,
-`line-3/tools/proxy-authority/proxy_authority.py --self-test`,
-`line-3/tools/delegate-scan/delegate_scan.py --self-test`,
-`line-4/tools/source-check/source_check.py --self-test`,
-`line-4/tools/compiler-trailer/trailer.py --self-test`.
-Live runs omitted the offline flag; line 2 used both tools' `--demo`.
+Each goal serves unfamiliar workers outside this cave and differs from the
+other three: endpoint reliability, call preview, upgrade reconnaissance, source
+review. Supporting ABI/block evidence does not replace those goals. For 21
+Pepes, keep line 1 to bounded samples/agreement; line 2 to bounded ABI eth_call
+outcomes; line 3 to named proxy patterns and observable authority; line 4 to
+source bundles/compiler context. Universal uptime, transaction guarantees,
+complete future immutability and universal compilation need narrower goals.
 
-All four goals serve unfamiliar workers outside this cave and remain distinct:
-RPC reliability, call preview, upgrade reconnaissance and source review.
-Supporting pins/error decoding do not replace goals or duplicate another line.
-For 21 Pepes keep line 1 to bounded sampling/agreement; line 2 to eth_call and
-bounded ABI outcomes; line 3 to known routes/opcode evidence/observable authority;
-line 4 to source bundles/compiler context. Universal uptime, future transaction
-guarantees, complete immutability proofs and universal compilers exceed scope.
-
-Shared copies refreshed; added revert naming, delegate scan, proxy authority and
-compiler trailer, with original source hashes in shared/provenance.json. Only
-package imports adapted. Agreement-gated preview now names reverts and accepts
-provider generators. All copied self-tests and shared/check.py, check_agreed.py,
-check_named.py passed. The old shared check needed its mock updated for the
-prebuilt proxy opener; repaired and reran. Live shared totalSupply was 10^27 at
-26136820; named transfer revert at 26136821 reported zero sender, balance 0,
-needed 1. Both providers passed post-call rechecks. Original preflight passed.
-These are local observations, not certification.
+Shared copies refreshed with original hashes. Added sampling, typed codec and
+clone-context copies. typed_agreed.py connects lines 1/2: build calldata, gate on
+agreement, call at that height, recheck every provider, retain raw/malformed
+returns and named reverts. Five shared checks and copied demos/self-tests passed.
+Live typed ZTO balance returned 0 at 26136926, hash
+0xbdb1e1a9b2535910b5ff34440919d23eda924dbcb7877ba9d6c8e6b32840c572;
+both post-call rechecks matched. Observations are not certification.
